@@ -1,7 +1,7 @@
 from Board import Board
 board = Board()
-print("hey")
-print(board.cells)
+print(board.toString())
+print board.win()
 
 
 # need to get input that tells how many trials to run-three numbers
