@@ -4,6 +4,12 @@ class Board:
         [[None, None, None, None], ["X", None, None, "O"], [None, None, None, None], [None, None, None, None]],
         [[None, None, None, "O"], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
 
+    cellsRw = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
+
+
 # TODO ToString
     def toString(self):
         str = ""
@@ -19,7 +25,6 @@ class Board:
             str += "\n"
         return str
 
-# Model free active q learning?
 
 # TODO make win/lose/draw/incomplete function
     def win(self):
@@ -44,9 +49,24 @@ class Board:
         #         if "X" == cells[0][a][b] == cells[1][a][b] == cells[2][a][b] == cells[3][a][b]: return 1
         #         if "O" == cells[0][a][b] == cells[1][a][b] == cells[2][a][b] == cells[3][a][b]: return -1
 
-# TODO make reward function
-# reward with value of 1 if putting a move in that square leads to a win?
-# average the value each iteration(trial)? is this the same as value iteration?
+        # return 0 if not enough info/game still in progress
+        # return -1 if draw?
+
+# TODO make play game function?
+
 
 # TODO make choose move function
-#
+# store the move until the next iteration so we can reward the right square
+# choose random moves the first x trials, then occasionally after x? exploration vs exploitation
+    def chooseMove(self, rand):
+
+        return
+
+# TODO make reward function
+# reward with value of 1 if putting a move in that square leads to a win- keep running total, when we need
+# the percentage of the time, divide by the iteration we're on
+# should we reward any square that leads to a win for either x or o? the strategy will be the same
+# average the value each iteration(trial)? is this the same as value iteration?
+    def reward(self, square):
+        square = square+1
+        return
