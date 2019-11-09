@@ -1,13 +1,21 @@
+from random import randint
 class Board:
-    cells = [[["X", None, None, None], ["X", "X", None, None], [None, None, "X", None], [None, None, None, "X"]],
-        [[None, None, None, None], [None, "X", "X", "X"], [None, None, None, "O"], [None, None, None, None]],
-        [[None, None, None, None], ["X", None, None, "O"], [None, None, None, None], [None, None, None, None]],
-        [[None, None, None, "O"], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
+    # TODO Refactor this to be a flat one dimensional array?
+    # cells = [[["X", None, None, None], ["X", "X", None, None], [None, None, "X", None], [None, None, None, "X"]],
+    #     [[None, None, None, None], [None, "X", "X", "X"], [None, None, None, "O"], [None, None, None, None]],
+    #     [[None, None, None, None], ["X", None, None, "O"], [None, None, None, None], [None, None, None, None]],
+    #     [[None, None, None, "O"], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
+
+    cells = [[[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
+             [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
+             [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
+             [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
 
     cellsRw = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
              [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
              [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
              [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
+    player = "X"
 
 
 # TODO ToString
@@ -49,24 +57,74 @@ class Board:
         #         if "X" == cells[0][a][b] == cells[1][a][b] == cells[2][a][b] == cells[3][a][b]: return 1
         #         if "O" == cells[0][a][b] == cells[1][a][b] == cells[2][a][b] == cells[3][a][b]: return -1
 
+        # Different planes
+        if "X" == cells[0][0][0] == cells[1][1][1] == cells[2][2][2] == cells[3][3][3]: return 1
+        if "X" == cells[0][3][0] == cells[1][2][1] == cells[2][1][2] == cells[3][0][3]: return 1
+        if "X" == cells[0][0][3] == cells[1][1][2] == cells[2][2][1] == cells[3][3][0]: return 1
+        if "X" == cells[0][3][3] == cells[1][2][2] == cells[2][1][1] == cells[3][0][0]: return 1
+        if "O" == cells[0][0][0] == cells[1][1][1] == cells[2][2][2] == cells[3][3][3]: return -1
+        if "O" == cells[0][3][0] == cells[1][2][1] == cells[2][1][2] == cells[3][0][3]: return -1
+        if "O" == cells[0][0][3] == cells[1][1][2] == cells[2][2][1] == cells[3][3][0]: return -1
+        if "O" == cells[0][3][3] == cells[1][2][2] == cells[2][1][1] == cells[3][0][0]: return -1
+
+
+
         # return 0 if not enough info/game still in progress
         # return -1 if draw?
 
-# TODO make play game function?
+    def playGame(self, isRandom):
+        self.clearBoard()
+        self.chooseMove(isRandom)
+        self.reward()
 
+    def clearBoard(self):
+        self.cells = [
+            [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
+            [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
+            [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
+            [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
 
-# TODO make choose move function
-# store the move until the next iteration so we can reward the right square
-# choose random moves the first x trials, then occasionally after x? exploration vs exploitation
+    # Alternates between X and O
+    def getPlayer(self):
+        if self.player == "X":
+            self.player = "O"
+            return "X"
+        else:
+            self.player = "X"
+            return "O"
+
     def chooseMove(self, rand):
-
+        if rand:
+            # While all cells have not been filled
+            while self.toString().__contains__("-"):
+                cellFull = True
+                while cellFull:
+                    r1 = randint(0,len(self.cells)-1)
+                    r2 = randint(0,len(self.cells[0])-1)
+                    r3 = randint(0,len(self.cells[0][0])-1)
+                    if self.cells[r1][r2][r3] is None:
+                        cellFull = False
+                        # Assign the cell's X or O value
+                        self.cells[r1][r2][r3] = self.getPlayer()
+        else:
+            # TODO
+            x =2
         return
 
-# TODO make reward function
 # reward with value of 1 if putting a move in that square leads to a win- keep running total, when we need
 # the percentage of the time, divide by the iteration we're on
 # should we reward any square that leads to a win for either x or o? the strategy will be the same
 # average the value each iteration(trial)? is this the same as value iteration?
-    def reward(self, square):
-        square = square+1
-        return
+
+    # When a player wins, call this reward function.  It increases the reward of every cell that the winning player used to win.
+    def reward(self):
+        winner = self.win()
+        for a in range(len(self.cells)):
+            for b in range(len(self.cells[a])):
+                for c in range(len(self.cells[a][b])):
+                    if winner == 1:  # X
+                        if self.cells[a][b][c] == "X":
+                            self.cellsRw[a][b][c] += 1
+                    else:
+                        if self.cells[a][b][c] == "O":
+                            self.cellsRw[a][b][c] += 1
