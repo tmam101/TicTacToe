@@ -1,8 +1,8 @@
 from Board import Board
 import sys
-trials1 = sys.argv[1]
-trials2 = sys.argv[2]
-trials3 = sys.argv[3]
+#trials1 = sys.argv[1]
+#trials2 = sys.argv[2]
+#trials3 = sys.argv[3]
 
 board = Board()
 # This tests diagonals
@@ -14,12 +14,10 @@ board = Board()
 print(board.toString())
 print board.win()
 
-# TODO have a small perecent be random even after initial phase
-# TODO Find x highest reward squares and choose randomly from those?
-for i in range(1000):
-    board.playGame(True)
+#for i in range(1000):
+ #   board.playGame(True)
 for i in range(100):
-    board.playGame(False)
+    board.playGame(False, i)
 
 
 # need to get input that tells how many trials to run-three numbers
@@ -27,7 +25,12 @@ for i in range(100):
 # and the function can print out values once it finishes
 def train(self, trials1, trials2, trials3, gameBoard):
     for i in range(trials3):
-        # play game until win/lose/draw
+        # todo handle random choice based on trial values
+        # todo have a small percent be random even after initial phase?
+
+        rand = False
+        # passing in i so we can calculate average reward inside board
+        board.playGame(rand, i)
         if i in [trials1, trials2, trials3]:
             print()
         # print the current reward/utility values
