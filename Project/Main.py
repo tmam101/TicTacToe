@@ -36,6 +36,3 @@ def train(self, trials1, trials2, trials3, gameBoard):
         # print the current reward/utility values
 
     return
-
-def argmax(l):
-    return max(zip(l, range(len(l))))[1]

@@ -166,6 +166,23 @@ class Board:
                     # todo get cell with max reward value: no built in argmax in python. loop through?
                     # todo if top cell is full, get next highest. maybe set reward to 0 in currReward if cell is full so it doesn't get pulled the next time?
 
+                    currMax = 0;
+                    maxIndex = (0, 0, 0)
+                    findingEmptyCell = True
+
+                    while findingEmptyCell:
+                        for a in range(len(self.cells)):
+                            for b in range(len(self.cells[a])):
+                                for c in range(len(self.cells[a][b])):
+                                    if currRewards[a][b][c] > currMax:
+                                        maxIndex = (a, b, c)
+
+                        if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is None:
+                            self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] = self.getPlayer()
+                            findingEmptyCell = False
+                        if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is not None:
+                            currRewards[maxIndex[0]][maxIndex[1]][maxIndex[2]] = 0
+
                     # if cell is empty, put player mark in
                     # may have to directly reference with numbers, not with variable- see above rand code for ex
                     if selectedCell is None:
