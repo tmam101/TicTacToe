@@ -98,7 +98,7 @@ class Board:
         if "X" == cells[3][3][0] == cells[2][2][1] == cells[1][1][2] == cells[0][0][3]: return 1
         if "O" == cells[3][3][0] == cells[2][2][1] == cells[1][1][2] == cells[0][0][3]: return -1
 
-        return 0;
+        return 0
 
         # return 0 if not enough info/game still in progress
         # return -1 if draw?
