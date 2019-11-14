@@ -190,6 +190,7 @@ class Board:
                         for b in range(len(self.cells[a])):
                             for c in range(len(self.cells[a][b])):
                                 if currRewards[a][b][c] > currMax:
+                                    currMax = currRewards[a][b][c]
                                     maxIndex = (a, b, c)
 
                     if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is None:

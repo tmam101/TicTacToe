@@ -5,9 +5,9 @@ import sys
 # trials2 = int(sys.argv[2])
 # trials3 = int(sys.argv[3])
 
-trials1 = 100
-trials2 = 500
-trials3 = 2000
+trials1 = 2000
+trials2 = 4000
+trials3 = 6000
 
 
 board = Board()
