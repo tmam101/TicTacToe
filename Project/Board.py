@@ -1,6 +1,8 @@
+import math
 from random import randint
+
+
 class Board:
-    # TODO Refactor this to be a flat one dimensional array?
     # cells = [[["X", None, None, None], ["X", "X", None, None], [None, None, "X", None], [None, None, None, "X"]],
     #     [[None, None, None, None], [None, "X", "X", "X"], [None, None, None, "O"], [None, None, None, None]],
     #     [[None, None, None, None], ["X", None, None, "O"], [None, None, None, None], [None, None, None, None]],
@@ -12,13 +14,12 @@ class Board:
              [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
 
     cellsRw = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
+               [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+               [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+               [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
     player = "X"
 
-
-# TODO ToString
+    # TODO ToString
     def toString(self):
         str = ""
         for x in range(4):
@@ -33,8 +34,25 @@ class Board:
             str += "\n"
         return str
 
+    # print reward values
+    def rewToString(self, iteration):
+        string = ""
+        currRewards = [[[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                       [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                       [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                       [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]]
+        # divide by current iteration to get % of the time square was used in win
+        for a in range(len(self.cells)):
+            for b in range(len(self.cells[a])):
+                for c in range(len(self.cells[a][b])):
+                    currRewards[a][b][c] = round(self.cellsRw[a][b][c] / (iteration + 1.0), 3)
+                    string += str(currRewards[a][b][c]) + " "
 
-# TODO make win/lose/draw/incomplete function
+                string += "\n"
+            string += "\n"
+        return string
+
+    # TODO make win/lose/draw/incomplete function
     def win(self):
         cells = self.cells
 
@@ -51,8 +69,8 @@ class Board:
         for z in range(4):
             # 4 rows
             for x in range(4):
-                if "X" == cells[x][0][z] == cells[x][1][z] == cells[x][2][z] == cells [x][3][z]: return 1
-                if "O" == cells[x][0][z] == cells[x][1][z] == cells[x][2][z] == cells [x][3][z]: return -1
+                if "X" == cells[x][0][z] == cells[x][1][z] == cells[x][2][z] == cells[x][3][z]: return 1
+                if "O" == cells[x][0][z] == cells[x][1][z] == cells[x][2][z] == cells[x][3][z]: return -1
 
             # 4 columns
             for y in range(4):
@@ -101,7 +119,6 @@ class Board:
         return 0
 
         # return 0 if not enough info/game still in progress
-        # return -1 if draw?
 
     def playGame(self, isRandom, trial):
         self.clearBoard()
@@ -131,13 +148,13 @@ class Board:
                 # check if someone has won- if so, exit
                 if self.win() == 1 or self.win() == -1:
                     return
-                cellFull = True
-                while cellFull:
-                    r1 = randint(0,len(self.cells)-1)
-                    r2 = randint(0,len(self.cells[0])-1)
-                    r3 = randint(0,len(self.cells[0][0])-1)
+                findingEmptyCell = True
+                while findingEmptyCell:
+                    r1 = randint(0, len(self.cells) - 1)
+                    r2 = randint(0, len(self.cells[0]) - 1)
+                    r3 = randint(0, len(self.cells[0][0]) - 1)
                     if self.cells[r1][r2][r3] is None:
-                        cellFull = False
+                        findingEmptyCell = False
                         # Assign the cell's X or O value
                         self.cells[r1][r2][r3] = self.getPlayer()
         else:
@@ -145,15 +162,15 @@ class Board:
             # select square with top reward value. if full, choose cell with next highest value
 
             # set up array to hold reward values without messing with running list
-            currRewards = [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-             [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
+            currRewards = [[[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                           [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                           [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]],
+                           [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]]]
             # divide by current iteration to get % of the time square was used in win
             for a in range(len(self.cells)):
                 for b in range(len(self.cells[a])):
                     for c in range(len(self.cells[a][b])):
-                        currRewards[a][b][c] = self.cellsRw[a][b][c]/iteration
+                        currRewards[a][b][c] = round(self.cellsRw[a][b][c] / (iteration + 1.0), 3)
 
             # choose moves until the board is full or someone has won
             while self.toString().__contains__("-"):
@@ -161,39 +178,30 @@ class Board:
                     return
 
                 # look for an empty cell to put a mark in
-                cellFull = True
-                while cellFull:
-                    # todo get cell with max reward value: no built in argmax in python. loop through?
-                    # todo if top cell is full, get next highest. maybe set reward to 0 in currReward if cell is full so it doesn't get pulled the next time?
+                # todo get cell with max reward value: no built in argmax in python. loop through?
+                # todo if top cell is full, get next highest. maybe set reward to 0 in currReward if cell is full so it doesn't get pulled the next time?
 
-                    currMax = 0;
-                    maxIndex = (0, 0, 0)
-                    findingEmptyCell = True
+                currMax = 0
+                maxIndex = (0, 0, 0)
+                findingEmptyCell = True
 
-                    while findingEmptyCell:
-                        for a in range(len(self.cells)):
-                            for b in range(len(self.cells[a])):
-                                for c in range(len(self.cells[a][b])):
-                                    if currRewards[a][b][c] > currMax:
-                                        maxIndex = (a, b, c)
+                while findingEmptyCell:
+                    for a in range(len(self.cells)):
+                        for b in range(len(self.cells[a])):
+                            for c in range(len(self.cells[a][b])):
+                                if currRewards[a][b][c] > currMax:
+                                    maxIndex = (a, b, c)
 
-                        if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is None:
-                            self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] = self.getPlayer()
-                            findingEmptyCell = False
-                        if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is not None:
-                            currRewards[maxIndex[0]][maxIndex[1]][maxIndex[2]] = 0
-
-                    # if cell is empty, put player mark in
-                    # may have to directly reference with numbers, not with variable- see above rand code for ex
-                    if selectedCell is None:
-                        cellFull = False
-                        # Assign the cell's X or O value
-                        selectedCell = self.getPlayer()
+                    if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is None:
+                        self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] = self.getPlayer()
+                        findingEmptyCell = False
+                    if self.cells[maxIndex[0]][maxIndex[1]][maxIndex[2]] is not None:
+                        currRewards[maxIndex[0]][maxIndex[1]][maxIndex[2]] = -1.0
 
         return
 
-# reward with value of 1 if putting a move in that square leads to a win- keep running total, when we need
-# the percentage of the time, divide by the iteration we're on
+    # reward with value of 1 if putting a move in that square leads to a win- keep running total, when we need
+    # the percentage of the time, divide by the iteration we're on
 
     # When a player wins, call this reward function.
     # It increases the reward of every cell that the winning player used to win.
@@ -208,3 +216,22 @@ class Board:
                     else:
                         if self.cells[a][b][c] == "O":
                             self.cellsRw[a][b][c] += 1
+
+    # need to get input that tells how many trials to run-three numbers
+    # maybe make a train function that we can call with number of trials?
+    # and the function can print out values once it finishes
+    # todo handle random choice based on trial values
+
+    def train(self, trials1, trials2, trials3):
+        rand = True
+        for i in range(trials3):
+            # passing in i so we can calculate average reward inside board
+            self.playGame(rand, i)
+            if i == trials1:
+                rand = False
+            if i in [trials1 - 1, trials2 - 1, trials3 - 1]:
+                # print the current reward/utility values
+                print('Utility values at iteration ' + str(i + 1))
+                print(self.rewToString(i))
+
+        return
