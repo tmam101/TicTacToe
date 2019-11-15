@@ -215,7 +215,7 @@ class Board:
         for i in range(trials3):
             # passing in i so we can calculate average reward inside board
             self.playGame(rand, i)
-            if i == trials1:
+            if i == trials3/3:
                 rand = False
             if i in [trials1 - 1, trials2 - 1, trials3 - 1]:
                 # print the current reward/utility values
