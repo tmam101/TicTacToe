@@ -1,13 +1,7 @@
-import math
 from random import randint
 
 
 class Board:
-    # cells = [[["X", None, None, None], ["X", "X", None, None], [None, None, "X", None], [None, None, None, "X"]],
-    #     [[None, None, None, None], [None, "X", "X", "X"], [None, None, None, "O"], [None, None, None, None]],
-    #     [[None, None, None, None], ["X", None, None, "O"], [None, None, None, None], [None, None, None, None]],
-    #     [[None, None, None, "O"], [None, None, None, None], [None, None, None, None], [None, None, None, None]]]
-
     cells = [[[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
              [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
              [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]],
@@ -19,7 +13,6 @@ class Board:
                [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
     player = "X"
 
-    # TODO ToString
     def toString(self):
         str = ""
         for x in range(4):
@@ -52,7 +45,6 @@ class Board:
             string += "\n"
         return string
 
-    # TODO make win/lose/draw/incomplete function
     def win(self):
         cells = self.cells
 
@@ -158,7 +150,6 @@ class Board:
                         # Assign the cell's X or O value
                         self.cells[r1][r2][r3] = self.getPlayer()
         else:
-            # TODO choose based on current reward values
             # select square with top reward value. if full, choose cell with next highest value
 
             # set up array to hold reward values without messing with running list
@@ -178,9 +169,6 @@ class Board:
                     return
 
                 # look for an empty cell to put a mark in
-                # todo get cell with max reward value: no built in argmax in python. loop through?
-                # todo if top cell is full, get next highest. maybe set reward to 0 in currReward if cell is full so it doesn't get pulled the next time?
-
                 currMax = 0
                 maxIndex = (0, 0, 0)
                 findingEmptyCell = True
@@ -221,7 +209,6 @@ class Board:
     # need to get input that tells how many trials to run-three numbers
     # maybe make a train function that we can call with number of trials?
     # and the function can print out values once it finishes
-    # todo handle random choice based on trial values
 
     def train(self, trials1, trials2, trials3):
         rand = True
